@@ -1,11 +1,21 @@
 {
-  "name": "passport-multisession",
+  "name": "passport-multilogin",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./lib",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "passport-strategy": "^1.0.0",
+    "pause": "0.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-passport-strategy": "^3.0.0",
+    "make-node": "^0.4.6",
+    "mocha": "^9.1.3"
+  }
 }
