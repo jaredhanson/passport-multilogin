@@ -1,8 +1,9 @@
 /* global describe, it, expect, before */
 /* jshint expr: true */
 
-var chai = require('chai')
-  , MultiSessionStrategy = require('../lib/strategy');
+var expect = require('chai').expect;
+var chai = require('chai');
+var MultiSessionStrategy = require('../lib/strategy');
 
 
 describe('MultiSessionStrategy', function() {
@@ -13,184 +14,122 @@ describe('MultiSessionStrategy', function() {
     expect(strategy.name).to.equal('session');
   });
   
-  describe('handling a request without a login session', function() {
-    var request, pass = false;
-  
-    before(function(done) {
-      chai.passport.use(strategy)
-        .pass(function() {
-          pass = true;
-          done();
-        })
-        .request(function(req) {
-          request = req;
-          
-          req._passport = {};
-          req.session = {};
-          req.session['passport'] = {};
-        })
-        .authenticate();
-    });
-  
-    it('should pass', function() {
-      expect(pass).to.be.true;
-    });
-    
-    it('should not set user on request', function() {
-      expect(request.user).to.be.undefined;
-    });
+  it('handling a request without a login session', function(done) {
+    chai.passport.use(strategy)
+      .pass(function() {
+        expect(this.user).to.be.undefined;
+        done();
+      })
+      .request(function(req) {
+        req._passport = {};
+        req.session = {};
+        req.session['passport'] = {};
+      })
+      .authenticate();
   });
   
-  describe('handling a request with a login session', function() {
+  it('handling a request with a login session', function(done) {
     var strategy = new MultiSessionStrategy(function(user, req, done) {
       done(null, user);
     });
     
-    var request, pass = false;
-  
-    before(function(done) {
-      chai.passport.use(strategy)
-        .pass(function() {
-          pass = true;
-          done();
-        })
-        .request(function(req) {
-          request = req;
-          
-          req._passport = {};
-          req._passport.instance = {};
-          req.session = {};
-          req.session['passport'] = {};
-          req.session['passport'][0] = {};
-          req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
-        })
-        .authenticate();
-    });
-  
-    it('should pass', function() {
-      expect(pass).to.be.true;
-    });
-    
-    it('should set user on request', function() {
-      expect(request.user).to.deep.equal({
-        id: '123456',
-        displayName: 'Alice'
-      });
-    });
-    
-    it('should maintain session', function() {
-      expect(request.session['passport']).to.deep.equal({
-        0: {
-          user: { id: '123456', displayName: 'Alice' }
-        }
-      });
-    });
+    chai.passport.use(strategy)
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '123456',
+          displayName: 'Alice'
+        });
+        
+        expect(this.session['passport']).to.deep.equal({
+          0: {
+            user: { id: '123456', displayName: 'Alice' }
+          }
+        });
+        
+        done();
+      })
+      .request(function(req) {
+        req._passport = {};
+        req._passport.instance = {};
+        req.session = {};
+        req.session['passport'] = {};
+        req.session['passport'][0] = {};
+        req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
+      })
+      .authenticate();
   });
   
-  describe('handling a request with multiple login sessions', function() {
+  it('handling a request with multiple login sessions', function(done) {
     var strategy = new MultiSessionStrategy(function(user, req, done) {
       done(null, user);
     });
     
-    var request, pass = false;
-  
-    before(function(done) {
-      chai.passport.use(strategy)
-        .pass(function() {
-          pass = true;
-          done();
-        })
-        .request(function(req) {
-          request = req;
-          
-          req._passport = {};
-          req._passport.instance = {};
-          req.session = {};
-          req.session['passport'] = {};
-          req.session['passport'][0] = {};
-          req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
-          req.session['passport'][1] = {};
-          req.session['passport'][1].user = { id: '123457', displayName: 'Bob' };
-        })
-        .authenticate();
-    });
-  
-    it('should pass', function() {
-      expect(pass).to.be.true;
-    });
-    
-    it('should set user on request', function() {
-      expect(request.user).to.deep.equal({
-        id: '123456',
-        displayName: 'Alice'
-      });
-    });
-    
-    it('should maintain session', function() {
-      expect(request.session['passport']).to.deep.equal({
-        0: {
-          user: { id: '123456', displayName: 'Alice' }
-        },
-        1: {
-          user: { id: '123457', displayName: 'Bob' }
-        }
-      });
-    });
+    chai.passport.use(strategy)
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '123456',
+          displayName: 'Alice'
+        });
+        expect(this.session['passport']).to.deep.equal({
+          0: {
+            user: { id: '123456', displayName: 'Alice' }
+          },
+          1: {
+            user: { id: '123457', displayName: 'Bob' }
+          }
+        });
+        done();
+      })
+      .request(function(req) {
+        req._passport = {};
+        req._passport.instance = {};
+        req.session = {};
+        req.session['passport'] = {};
+        req.session['passport'][0] = {};
+        req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
+        req.session['passport'][1] = {};
+        req.session['passport'][1].user = { id: '123457', displayName: 'Bob' };
+      })
+      .authenticate();
   });
   
-  describe('handling a request with multiple login sessions and select query parameter', function() {
+  it('handling a request with multiple login sessions and select query parameter', function(done) {
     var strategy = new MultiSessionStrategy(function(user, req, done) {
       done(null, user);
     });
     
-    var request, pass = false;
-  
-    before(function(done) {
-      chai.passport.use(strategy)
-        .pass(function() {
-          pass = true;
-          done();
-        })
-        .request(function(req) {
-          request = req;
-          req.query = { au: '1' };
-          
-          req._passport = {};
-          req._passport.instance = {};
-          req.session = {};
-          req.session['passport'] = {};
-          req.session['passport'][0] = {};
-          req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
-          req.session['passport'][1] = {};
-          req.session['passport'][1].user = { id: '123457', displayName: 'Bob' };
-        })
-        .authenticate();
-    });
-  
-    it('should pass', function() {
-      expect(pass).to.be.true;
-    });
-    
-    it('should set user on request', function() {
-      expect(request.user).to.deep.equal({
-        id: '123457',
-        displayName: 'Bob'
-      });
-    });
-    
-    it('should maintain session', function() {
-      expect(request.session['passport']).to.deep.equal({
-        0: {
-          user: { id: '123456', displayName: 'Alice' }
-        },
-        1: {
-          user: { id: '123457', displayName: 'Bob' }
-        }
-      });
-    });
+    chai.passport.use(strategy)
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '123457',
+          displayName: 'Bob'
+        });
+        expect(this.session['passport']).to.deep.equal({
+          0: {
+            user: { id: '123456', displayName: 'Alice' }
+          },
+          1: {
+            user: { id: '123457', displayName: 'Bob' }
+          }
+        });
+        done();
+      })
+      .request(function(req) {
+        req.query = { au: '1' };
+        
+        req._passport = {};
+        req._passport.instance = {};
+        req.session = {};
+        req.session['passport'] = {};
+        req.session['passport'][0] = {};
+        req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
+        req.session['passport'][1] = {};
+        req.session['passport'][1].user = { id: '123457', displayName: 'Bob' };
+      })
+      .authenticate();
   });
   
-  describe.only('handling a request with multiple login sessions and multi option', function() {
+  describe('handling a request with multiple login sessions and multi option', function() {
     var strategy = new MultiSessionStrategy(function(user, req, done) {
       done(null, user);
     });

@@ -1,3 +1,4 @@
+var expect = require('chai').expect;
 var pkg = require('..');
 
 describe('passport-multilogin', function() {
