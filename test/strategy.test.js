@@ -14,81 +14,84 @@ describe('MultiSessionStrategy', function() {
     expect(strategy.name).to.equal('session');
   });
   
-  it('handling a request without a login session', function(done) {
+  it('should pass request without login session', function(done) {
     chai.passport.use(strategy)
+      .request(function(req) {
+        req._passport = {};
+        req.session = {};
+        req.session['passport'] = {};
+      })
       .pass(function() {
         expect(this.user).to.be.undefined;
         done();
       })
-      .request(function(req) {
-        req._passport = {};
-        req.session = {};
-        req.session['passport'] = {};
-      })
       .authenticate();
   });
   
-  it('handling a request with a login session', function(done) {
-    var strategy = new MultiSessionStrategy(function(user, req, done) {
-      done(null, user);
+  it('should pass request with login session', function(done) {
+    var strategy = new MultiSessionStrategy(function(user, req, cb) {
+      cb(null, user);
     });
     
     chai.passport.use(strategy)
-      .pass(function() {
-        expect(this.user).to.deep.equal({
-          id: '123456',
-          displayName: 'Alice'
-        });
-        
-        expect(this.session['passport']).to.deep.equal({
-          0: {
-            user: { id: '123456', displayName: 'Alice' }
-          }
-        });
-        
-        done();
-      })
       .request(function(req) {
         req._passport = {};
         req._passport.instance = {};
         req.session = {};
-        req.session['passport'] = {};
-        req.session['passport'][0] = {};
-        req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
+        req.session['passport'] = {
+          0: {
+            user: { id: '248289761001', displayName: 'Jane Doe' }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '248289761001',
+          displayName: 'Jane Doe'
+        });
+        expect(this.session['passport']).to.deep.equal({
+          0: {
+            user: { id: '248289761001', displayName: 'Jane Doe' }
+          }
+        });
+        done();
       })
       .authenticate();
   });
   
-  it('handling a request with multiple login sessions', function(done) {
+  it('should pass request with two login sessions', function(done) {
     var strategy = new MultiSessionStrategy(function(user, req, done) {
       done(null, user);
     });
     
     chai.passport.use(strategy)
-      .pass(function() {
-        expect(this.user).to.deep.equal({
-          id: '123456',
-          displayName: 'Alice'
-        });
-        expect(this.session['passport']).to.deep.equal({
+      .request(function(req) {
+        req._passport = {};
+        req._passport.instance = {};
+        req.session = {};
+        req.session['passport'] = {
           0: {
-            user: { id: '123456', displayName: 'Alice' }
+            user: { id: '248289761001', displayName: 'Jane Doe' }
           },
           1: {
-            user: { id: '123457', displayName: 'Bob' }
+            user: { id: '248289761002', displayName: 'John Doe' }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '248289761001',
+          displayName: 'Jane Doe'
+        });
+        expect(this.session['passport']).to.deep.equal({
+          0: {
+            user: { id: '248289761001', displayName: 'Jane Doe' }
+          },
+          1: {
+            user: { id: '248289761002', displayName: 'John Doe' }
           }
         });
         done();
-      })
-      .request(function(req) {
-        req._passport = {};
-        req._passport.instance = {};
-        req.session = {};
-        req.session['passport'] = {};
-        req.session['passport'][0] = {};
-        req.session['passport'][0].user = { id: '123456', displayName: 'Alice' };
-        req.session['passport'][1] = {};
-        req.session['passport'][1].user = { id: '123457', displayName: 'Bob' };
       })
       .authenticate();
   });
