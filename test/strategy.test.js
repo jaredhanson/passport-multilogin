@@ -3,18 +3,19 @@
 
 var expect = require('chai').expect;
 var chai = require('chai');
-var MultiSessionStrategy = require('../lib/strategy');
+var Strategy = require('../lib/strategy');
 
 
-describe('MultiSessionStrategy', function() {
-  
-  var strategy = new MultiSessionStrategy();
+describe('Strategy', function() {
   
   it('should be named session', function() {
+    var strategy = new Strategy();
     expect(strategy.name).to.equal('session');
   });
   
   it('should pass request without login session', function(done) {
+    var strategy = new Strategy();
+    
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
@@ -29,7 +30,7 @@ describe('MultiSessionStrategy', function() {
   });
   
   it('should pass request with login session', function(done) {
-    var strategy = new MultiSessionStrategy(function(user, req, cb) {
+    var strategy = new Strategy(function(user, req, cb) {
       cb(null, user);
     });
     
@@ -60,7 +61,7 @@ describe('MultiSessionStrategy', function() {
   });
   
   it('should pass request with two login sessions', function(done) {
-    var strategy = new MultiSessionStrategy(function(user, req, done) {
+    var strategy = new Strategy(function(user, req, done) {
       done(null, user);
     });
     
@@ -97,7 +98,7 @@ describe('MultiSessionStrategy', function() {
   });
   
   it('should pass request with two login sessions and selector query parameter', function(done) {
-    var strategy = new MultiSessionStrategy(function(user, req, done) {
+    var strategy = new Strategy(function(user, req, done) {
       done(null, user);
     });
     
@@ -134,8 +135,8 @@ describe('MultiSessionStrategy', function() {
       .authenticate();
   });
   
-  it('handling a request with multiple login sessions and multi option', function(done) {
-    var strategy = new MultiSessionStrategy(function(user, req, done) {
+  it('should pass request with two login sessions using multi option', function(done) {
+    var strategy = new Strategy(function(user, req, done) {
       done(null, user);
     });
     
