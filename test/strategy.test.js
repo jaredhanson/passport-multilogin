@@ -61,8 +61,8 @@ describe('Strategy', function() {
   });
   
   it('should pass request with two login sessions', function(done) {
-    var strategy = new Strategy(function(user, req, done) {
-      done(null, user);
+    var strategy = new Strategy(function(user, req, cb) {
+      cb(null, user);
     });
     
     chai.passport.use(strategy)
@@ -98,8 +98,8 @@ describe('Strategy', function() {
   });
   
   it('should pass request with two login sessions and selector query parameter', function(done) {
-    var strategy = new Strategy(function(user, req, done) {
-      done(null, user);
+    var strategy = new Strategy(function(user, req, cb) {
+      cb(null, user);
     });
     
     chai.passport.use(strategy)
@@ -136,8 +136,8 @@ describe('Strategy', function() {
   });
   
   it('should pass request with two login sessions using multi option', function(done) {
-    var strategy = new Strategy(function(user, req, done) {
-      done(null, user);
+    var strategy = new Strategy(function(user, req, cb) {
+      cb(null, user);
     });
     
     chai.passport.use(strategy)
