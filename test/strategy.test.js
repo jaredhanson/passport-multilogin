@@ -89,12 +89,12 @@ describe('Strategy', function() {
         req._passport.instance = {};
         req.session = {};
         req.session['passport'] = {
-          default: 0,
+          default: 'a001',
           sessions: {
-            0: {
+            'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' }
             },
-            1: {
+            'a002': {
               user: { id: '248289761002', displayName: 'John Doe' }
             }
           }
@@ -107,12 +107,12 @@ describe('Strategy', function() {
         });
         expect(this.session).to.deep.equal({
           passport: {
-            default: 0,
+            default: 'a001',
             sessions: {
-              0: {
+              'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' }
               },
-              1: {
+              'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' }
               }
             }
@@ -132,15 +132,15 @@ describe('Strategy', function() {
       .request(function(req) {
         req._passport = {};
         req._passport.instance = {};
-        req.query = { au: '1' };
+        req.query = { s: 'a002' };
         req.session = {};
         req.session['passport'] = {
-          default: 0,
+          default: 'a001',
           sessions: {
-            0: {
+            'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' }
             },
-            1: {
+            'a002': {
               user: { id: '248289761002', displayName: 'John Doe' }
             }
           }
@@ -153,12 +153,12 @@ describe('Strategy', function() {
         });
         expect(this.session).to.deep.equal({
           passport: {
-            default: 0,
+            default: 'a001',
             sessions: {
-              0: {
+              'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' }
               },
-              1: {
+              'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' }
               }
             }
@@ -180,11 +180,12 @@ describe('Strategy', function() {
         req._passport.instance = {};
         req.session = {};
         req.session['passport'] = {
+          default: 'a001',
           sessions: {
-            0: {
+            'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' }
             },
-            1: {
+            'a002': {
               user: { id: '248289761002', displayName: 'John Doe' }
             }
           }
@@ -199,17 +200,18 @@ describe('Strategy', function() {
           displayName: 'John Doe'
         } ]);
         expect(this.authInfo).to.deep.equal([ {
-          sessionSelector: '0'
+          sessionSelector: 'a001'
         }, {
-          sessionSelector: '1'
+          sessionSelector: 'a002'
         } ]);
         expect(this.session).to.deep.equal({
           passport: {
+            default: 'a001',
             sessions: {
-              0: {
+              'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' }
               },
-              1: {
+              'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' }
               }
             }
