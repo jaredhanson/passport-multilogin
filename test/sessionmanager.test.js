@@ -32,12 +32,15 @@ describe('Strategy', function() {
         var timestamp = req.session['passport']['a001'].methods[0].timestamp;
         delete req.session['passport']['a001'].methods[0].timestamp;
         
-        expect(req.session['passport']).to.deep.equal({
-          'a001': {
-            user: { id: '248289761001', displayName: 'Jane Doe' },
-            methods: [ {
-              method: 'password'
-            } ]
+        expect(req.session).to.deep.equal({
+          '.passport': { default: 'a001' },
+          passport: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                method: 'password'
+              } ]
+            }
           }
         });
         expect(timestamp).to.be.closeToTime(new Date(), 1);
@@ -53,6 +56,7 @@ describe('Strategy', function() {
       var now = Date.now();
       var req = new Object();
       req.session = {};
+      req.session['.passport'] = { default: 'a001' };
       req.session['passport'] = {
         'a001': {
           user: { id: '248289761001', displayName: 'Jane Doe' },
@@ -75,12 +79,15 @@ describe('Strategy', function() {
         var timestamp = req.session['passport']['a001'].methods[0].timestamp;
         delete req.session['passport']['a001'].methods[0].timestamp;
         
-        expect(req.session['passport']).to.deep.equal({
-          'a001': {
-            user: { id: '248289761001', displayName: 'Jane Doe' },
-            methods: [ {
-              method: 'password'
-            } ]
+        expect(req.session).to.deep.equal({
+          '.passport': { default: 'a001' },
+          passport: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                method: 'password'
+              } ]
+            }
           }
         });
         expect(timestamp).to.be.closeToTime(new Date(), 1);
@@ -96,6 +103,7 @@ describe('Strategy', function() {
       var now = Date.now();
       var req = new Object();
       req.session = {};
+      req.session['.passport'] = { default: 'a001' };
       req.session['passport'] = {
         'a001': {
           user: { id: '248289761001', displayName: 'Jane Doe' },
@@ -118,15 +126,18 @@ describe('Strategy', function() {
         var timestamp = req.session['passport']['a001'].methods[1].timestamp;
         delete req.session['passport']['a001'].methods[1].timestamp;
         
-        expect(req.session['passport']).to.deep.equal({
-          'a001': {
-            user: { id: '248289761001', displayName: 'Jane Doe' },
-            methods: [ {
-              method: 'password',
-              timestamp: new Date(now - 5000)
-            }, {
-              method: 'otp'
-            } ]
+        expect(req.session).to.deep.equal({
+          '.passport': { default: 'a001' },
+          passport: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                method: 'password',
+                timestamp: new Date(now - 5000)
+              }, {
+                method: 'otp'
+              } ]
+            }
           }
         });
         expect(timestamp).to.be.closeToTime(new Date(), 1);
@@ -142,6 +153,7 @@ describe('Strategy', function() {
     
       var req = new Object();
       req.session = {};
+      req.session['.passport'] = { default: 'a001' };
       req.session['passport'] = {
         'a001': {
           user: { id: '248289761001', displayName: 'Jane Doe' },
@@ -163,18 +175,21 @@ describe('Strategy', function() {
         var timestamp = req.session['passport']['a002'].methods[0].timestamp;
         delete req.session['passport']['a002'].methods[0].timestamp;
         
-        expect(req.session['passport']).to.deep.equal({
-          'a001': {
-            user: { id: '248289761001', displayName: 'Jane Doe' },
-            methods: [ {
-              method: 'password'
-            } ]
-          },
-          'a002': {
-            user: { id: '248289761002', displayName: 'John Doe' },
-            methods: [ {
-              method: 'password'
-            } ]
+        expect(req.session).to.deep.equal({
+          '.passport': { default: 'a001' },
+          passport: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                method: 'password'
+              } ]
+            },
+            'a002': {
+              user: { id: '248289761002', displayName: 'John Doe' },
+              methods: [ {
+                method: 'password'
+              } ]
+            }
           }
         });
         expect(timestamp).to.be.closeToTime(new Date(), 1);
@@ -193,6 +208,7 @@ describe('Strategy', function() {
     
       var req = new Object();
       req.session = {};
+      req.session['.passport'] = { default: 'a001' };
       req.session['passport'] = {
         'a001': {
           user: { id: '248289761001', displayName: 'Jane Doe' },
@@ -203,7 +219,10 @@ describe('Strategy', function() {
       };
     
       manager.logOut(req, function(err) {
-        expect(req.session['passport']).to.deep.equal({});
+        expect(req.session).to.deep.equal({
+          '.passport': {},
+          passport: {}
+        });
         done();
       })
     }); // should finalize single session
@@ -215,6 +234,7 @@ describe('Strategy', function() {
     
       var req = new Object();
       req.session = {};
+      req.session['.passport'] = { default: 'a001' };
       req.session['passport'] = {
         'a001': {
           user: { id: '248289761001', displayName: 'Jane Doe' },
@@ -231,7 +251,10 @@ describe('Strategy', function() {
       };
     
       manager.logOut(req, function(err) {
-        expect(req.session['passport']).to.deep.equal({});
+        expect(req.session).to.deep.equal({
+          '.passport': {},
+          passport: {}
+        });
         done();
       })
     }); // should finalize two sessionss

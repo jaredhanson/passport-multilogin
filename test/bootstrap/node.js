@@ -1,5 +1,4 @@
-var chai = require('chai')
-  , passport = require('chai-passport-strategy');
+var chai = require('chai');
 
 chai.use(require('chai-datetime'));
 chai.use(require('chai-passport-strategy'));
