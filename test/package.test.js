@@ -1,5 +1,7 @@
 var expect = require('chai').expect;
+var sinon = require('sinon');
 var pkg = require('..');
+
 
 describe('passport-multilogin', function() {
     
@@ -18,4 +20,8 @@ describe('passport-multilogin', function() {
     expect(pkg.SessionManager).to.be.a('function');
   });
   
+});
+
+afterEach(function() {
+  sinon.restore();
 });
