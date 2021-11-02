@@ -266,4 +266,53 @@ describe('Strategy', function() {
       .authenticate({ multi: true });
   });
   
+  it('should pass request with two login sessions and selector query parameter using multi option', function(done) {
+    var strategy = new Strategy(function(user, req, cb) {
+      cb(null, user);
+    });
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req._passport = {};
+        req._passport.instance = {};
+        req.query = { s: 'a002' };
+        req.session = {};
+        req.session['passport'] = {
+          default: 'a001',
+          sessions: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' }
+            },
+            'a002': {
+              user: { id: '248289761002', displayName: 'John Doe' }
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '248289761002',
+          displayName: 'John Doe'
+        });
+        expect(this.authInfo).to.deep.equal({
+          sessionSelector: 'a002'
+        });
+        expect(this.session).to.deep.equal({
+          passport: {
+            default: 'a001',
+            sessions: {
+              'a001': {
+                user: { id: '248289761001', displayName: 'Jane Doe' }
+              },
+              'a002': {
+                user: { id: '248289761002', displayName: 'John Doe' }
+              }
+            }
+          }
+        });
+        done();
+      })
+      .authenticate({ multi: true });
+  }); // should pass request with two login sessions and selector query parameter using multi option
+  
 });

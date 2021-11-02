@@ -167,6 +167,7 @@ describe('Strategy', function() {
         cb(null, user);
       });
     
+      var now = Date.now();
       var req = new Object();
       req.session = {};
       req.session['passport'] = {
@@ -175,7 +176,8 @@ describe('Strategy', function() {
           'a001': {
             user: { id: '248289761001', displayName: 'Jane Doe' },
             methods: [ {
-              method: 'password'
+              method: 'password',
+              timestamp: new Date(now - 7200000)
             } ]
           }
         }
@@ -202,7 +204,8 @@ describe('Strategy', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password'
+                  method: 'password',
+                  timestamp: new Date(now - 7200000)
                 } ]
               },
               'a002': {
