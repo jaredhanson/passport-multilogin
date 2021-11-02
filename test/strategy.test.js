@@ -180,11 +180,13 @@ describe('Strategy', function() {
         req._passport.instance = {};
         req.session = {};
         req.session['passport'] = {
-          0: {
-            user: { id: '248289761001', displayName: 'Jane Doe' }
-          },
-          1: {
-            user: { id: '248289761002', displayName: 'John Doe' }
+          sessions: {
+            0: {
+              user: { id: '248289761001', displayName: 'Jane Doe' }
+            },
+            1: {
+              user: { id: '248289761002', displayName: 'John Doe' }
+            }
           }
         };
       })
@@ -201,12 +203,16 @@ describe('Strategy', function() {
         }, {
           sessionSelector: '1'
         } ]);
-        expect(this.session['passport']).to.deep.equal({
-          0: {
-            user: { id: '248289761001', displayName: 'Jane Doe' }
-          },
-          1: {
-            user: { id: '248289761002', displayName: 'John Doe' }
+        expect(this.session).to.deep.equal({
+          passport: {
+            sessions: {
+              0: {
+                user: { id: '248289761001', displayName: 'Jane Doe' }
+              },
+              1: {
+                user: { id: '248289761002', displayName: 'John Doe' }
+              }
+            }
           }
         });
         done();
