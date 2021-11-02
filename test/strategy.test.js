@@ -227,7 +227,105 @@ describe('Strategy', function() {
       .authenticate();
   });
   
-  // TODO: Test case with single, non default and multi
+  it('should pass request without default login session', function(done) {
+    var strategy = new Strategy(function(user, req, cb) {
+      cb(null, user);
+    });
+    
+    var now = Date.now();
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req._passport = {};
+        req._passport.instance = {};
+        req.session = {};
+        req.session['passport'] = {
+          sessions: {
+            'a002': {
+              user: { id: '248289761002', displayName: 'John Doe' },
+              methods: [ {
+                method: 'password',
+                timestamp: new Date(now - 3600000)
+              } ]
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.be.undefined;
+        expect(this.authInfo).to.be.undefined;
+        expect(this.session).to.deep.equal({
+          passport: {
+            sessions: {
+              'a002': {
+                user: { id: '248289761002', displayName: 'John Doe' },
+                methods: [ {
+                  method: 'password',
+                  timestamp: new Date(now - 3600000)
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+      .authenticate();
+  }); // should pass request without default login session
+  
+  it('should pass request without default login session and selector query parameter', function(done) {
+    var strategy = new Strategy(function(user, req, cb) {
+      cb(null, user);
+    });
+    
+    var now = Date.now();
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req._passport = {};
+        req._passport.instance = {};
+        req.query = { s: 'a002' };
+        req.session = {};
+        req.session['passport'] = {
+          sessions: {
+            'a002': {
+              user: { id: '248289761002', displayName: 'John Doe' },
+              methods: [ {
+                method: 'password',
+                timestamp: new Date(now - 3600000)
+              } ]
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '248289761002',
+          displayName: 'John Doe'
+        });
+        expect(this.authInfo).to.deep.equal({
+          methods: [ {
+            method: 'password',
+            timestamp: new Date(now - 3600000)
+          } ],
+          sessionSelector: 'a002'
+        });
+        expect(this.session).to.deep.equal({
+          passport: {
+            sessions: {
+              'a002': {
+                user: { id: '248289761002', displayName: 'John Doe' },
+                methods: [ {
+                  method: 'password',
+                  timestamp: new Date(now - 3600000)
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+      .authenticate();
+  }); // should pass request without default login session and selector query parameter
   
   it('should pass request with one login session using multi option', function(done) {
     var strategy = new Strategy(function(user, req, cb) {
