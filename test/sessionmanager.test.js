@@ -223,7 +223,7 @@ describe('Strategy', function() {
   
   describe('#logOut', function() {
     
-    it('should finalize single session', function(done) {
+    it('should terminate single session', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
       });
@@ -250,9 +250,9 @@ describe('Strategy', function() {
         });
         done();
       })
-    }); // should finalize single session
+    }); // should terminate single session
     
-    it('should finalize two sessions', function(done) {
+    it('should terminate two sessions', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
       });
@@ -285,7 +285,7 @@ describe('Strategy', function() {
         });
         done();
       })
-    }); // should finalize two sessionss
+    }); // should terminate two sessions
     
   });
   

@@ -169,6 +169,50 @@ describe('Strategy', function() {
       .authenticate();
   });
   
+  // TODO: Test case with single, non default and multi
+  
+  it('should pass request with one login session using multi option', function(done) {
+    var strategy = new Strategy(function(user, req, cb) {
+      cb(null, user);
+    });
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req._passport = {};
+        req._passport.instance = {};
+        req.session = {};
+        req.session['passport'] = {
+          default: 'a001',
+          sessions: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' }
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '248289761001',
+          displayName: 'Jane Doe'
+        });
+        expect(this.authInfo).to.deep.equal({
+          sessionSelector: 'a001'
+        });
+        expect(this.session).to.deep.equal({
+          passport: {
+            default: 'a001',
+            sessions: {
+              'a001': {
+                user: { id: '248289761001', displayName: 'Jane Doe' }
+              }
+            }
+          }
+        });
+        done();
+      })
+      .authenticate({ multi: true });
+  }); // should pass request with one login session using multi option
+  
   it('should pass request with two login sessions using multi option', function(done) {
     var strategy = new Strategy(function(user, req, cb) {
       cb(null, user);
