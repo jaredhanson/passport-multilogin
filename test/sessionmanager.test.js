@@ -31,7 +31,6 @@ describe('Strategy', function() {
         delete req.session['passport'][0].events[0].timestamp; 
         
         expect(req.session['passport']).to.deep.equal({
-          ni: 1,
           0: {
             user: { id: '248289761001', displayName: 'Jane Doe' },
             events: [ {
