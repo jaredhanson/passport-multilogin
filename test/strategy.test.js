@@ -105,14 +105,16 @@ describe('Strategy', function() {
           id: '248289761001',
           displayName: 'Jane Doe'
         });
-        expect(this.session['passport']).to.deep.equal({
-          default: 0,
-          sessions: {
-            0: {
-              user: { id: '248289761001', displayName: 'Jane Doe' }
-            },
-            1: {
-              user: { id: '248289761002', displayName: 'John Doe' }
+        expect(this.session).to.deep.equal({
+          passport: {
+            default: 0,
+            sessions: {
+              0: {
+                user: { id: '248289761001', displayName: 'Jane Doe' }
+              },
+              1: {
+                user: { id: '248289761002', displayName: 'John Doe' }
+              }
             }
           }
         });
@@ -149,14 +151,16 @@ describe('Strategy', function() {
           id: '248289761002',
           displayName: 'John Doe'
         });
-        expect(this.session['passport']).to.deep.equal({
-          default: 0,
-          sessions: {
-            0: {
-              user: { id: '248289761001', displayName: 'Jane Doe' }
-            },
-            1: {
-              user: { id: '248289761002', displayName: 'John Doe' }
+        expect(this.session).to.deep.equal({
+          passport: {
+            default: 0,
+            sessions: {
+              0: {
+                user: { id: '248289761001', displayName: 'Jane Doe' }
+              },
+              1: {
+                user: { id: '248289761002', displayName: 'John Doe' }
+              }
             }
           }
         });
@@ -175,7 +179,6 @@ describe('Strategy', function() {
         req._passport = {};
         req._passport.instance = {};
         req.session = {};
-        req.session['.passport'] = { default: 0 };
         req.session['passport'] = {
           0: {
             user: { id: '248289761001', displayName: 'Jane Doe' }
