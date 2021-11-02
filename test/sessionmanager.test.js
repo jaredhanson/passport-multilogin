@@ -7,7 +7,7 @@ var sinon = require('sinon');
 var SessionManager = require('../lib/sessionmanager');
 
 
-describe('Strategy', function() {
+describe('SessionManager', function() {
   
   describe('#logIn', function() {
     
