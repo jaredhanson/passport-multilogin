@@ -184,4 +184,58 @@ describe('Strategy', function() {
     
   }); // #logIn
   
+  describe('#logOut', function() {
+    
+    it('should finalize single session', function(done) {
+      var manager = new SessionManager(function(user, req, cb) {
+        cb(null, user);
+      });
+    
+      var req = new Object();
+      req.session = {};
+      req.session['passport'] = {
+        'a001': {
+          user: { id: '248289761001', displayName: 'Jane Doe' },
+          methods: [ {
+            method: 'password'
+          } ]
+        }
+      };
+    
+      manager.logOut(req, function(err) {
+        expect(req.session['passport']).to.deep.equal({});
+        done();
+      })
+    }); // should finalize single session
+    
+    it('should finalize two sessions', function(done) {
+      var manager = new SessionManager(function(user, req, cb) {
+        cb(null, user);
+      });
+    
+      var req = new Object();
+      req.session = {};
+      req.session['passport'] = {
+        'a001': {
+          user: { id: '248289761001', displayName: 'Jane Doe' },
+          methods: [ {
+            method: 'password'
+          } ]
+        },
+        'a002': {
+          user: { id: '248289761002', displayName: 'John Doe' },
+          methods: [ {
+            method: 'password'
+          } ]
+        }
+      };
+    
+      manager.logOut(req, function(err) {
+        expect(req.session['passport']).to.deep.equal({});
+        done();
+      })
+    }); // should finalize two sessionss
+    
+  });
+  
 });
