@@ -21,6 +21,7 @@ describe('Strategy', function() {
         req._passport = {};
         req.session = {};
         req.session['passport'] = {};
+        req.session['.passport'] = {};
       })
       .pass(function() {
         expect(this.user).to.be.undefined;
@@ -34,14 +35,21 @@ describe('Strategy', function() {
       cb(null, user);
     });
     
+    var now = Date.now();
+    
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
         req._passport.instance = {};
         req.session = {};
+        req.session['.passport'] = { default: 'a001' };
         req.session['passport'] = {
-          0: {
-            user: { id: '248289761001', displayName: 'Jane Doe' }
+          'a001': {
+            user: { id: '248289761001', displayName: 'Jane Doe' },
+            methods: [ {
+              method: 'password',
+              timestamp: new Date(now - 7200000)
+            } ]
           }
         };
       })
@@ -50,9 +58,16 @@ describe('Strategy', function() {
           id: '248289761001',
           displayName: 'Jane Doe'
         });
-        expect(this.session['passport']).to.deep.equal({
-          0: {
-            user: { id: '248289761001', displayName: 'Jane Doe' }
+        expect(this.session).to.deep.equal({
+          '.passport': { default: 'a001' },
+          passport: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                method: 'password',
+                timestamp: new Date(now - 7200000)
+              } ]
+            }
           }
         });
         done();
@@ -70,6 +85,7 @@ describe('Strategy', function() {
         req._passport = {};
         req._passport.instance = {};
         req.session = {};
+        req.session['.passport'] = { default: 0 };
         req.session['passport'] = {
           0: {
             user: { id: '248289761001', displayName: 'Jane Doe' }
@@ -108,6 +124,7 @@ describe('Strategy', function() {
         req._passport.instance = {};
         req.query = { au: '1' };
         req.session = {};
+        req.session['.passport'] = { default: 0 };
         req.session['passport'] = {
           0: {
             user: { id: '248289761001', displayName: 'Jane Doe' }
@@ -145,6 +162,7 @@ describe('Strategy', function() {
         req._passport = {};
         req._passport.instance = {};
         req.session = {};
+        req.session['.passport'] = { default: 0 };
         req.session['passport'] = {
           0: {
             user: { id: '248289761001', displayName: 'Jane Doe' }
