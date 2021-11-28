@@ -166,12 +166,9 @@ describe('Strategy', function() {
       cb(null, user);
     });
     
-    var now = Date.now();
-    
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
-        req._passport.instance = {};
         req.query = { s: 'a002' };
         req.session = {};
         req.session['passport'] = {
@@ -181,14 +178,14 @@ describe('Strategy', function() {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
                 method: 'password',
-                timestamp: new Date(now - 7200000)
+                timestamp: new Date(Date.now() - 7200000)
               } ]
             },
             'a002': {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
                 method: 'password',
-                timestamp: new Date(now - 3600000)
+                timestamp: new Date(Date.now() - 3600000)
               } ]
             }
           }
@@ -202,7 +199,7 @@ describe('Strategy', function() {
         expect(this.authInfo).to.deep.equal({
           methods: [ {
             method: 'password',
-            timestamp: new Date(now - 3600000)
+            timestamp: new Date('2011-07-21T19:42:50.000Z')
           } ],
           sessionSelector: 'a002'
         });
@@ -214,14 +211,14 @@ describe('Strategy', function() {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
                   method: 'password',
-                  timestamp: new Date(now - 7200000)
+                  timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               },
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
                   method: 'password',
-                  timestamp: new Date(now - 3600000)
+                  timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
             }
@@ -230,7 +227,7 @@ describe('Strategy', function() {
         done();
       })
       .authenticate();
-  });
+  }); // should pass request with two login sessions and selector query parameter
   
   it('should pass request without default login session', function(done) {
     var strategy = new Strategy(function(user, req, cb) {
