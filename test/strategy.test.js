@@ -234,8 +234,6 @@ describe('Strategy', function() {
       cb(null, user);
     });
     
-    var now = Date.now();
-    
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
@@ -247,7 +245,7 @@ describe('Strategy', function() {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
                 method: 'password',
-                timestamp: new Date(now - 3600000)
+                timestamp: new Date(Date.now() - 3600000)
               } ]
             }
           }
@@ -263,7 +261,7 @@ describe('Strategy', function() {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
                   method: 'password',
-                  timestamp: new Date(now - 3600000)
+                  timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
             }
@@ -279,12 +277,9 @@ describe('Strategy', function() {
       cb(null, user);
     });
     
-    var now = Date.now();
-    
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
-        req._passport.instance = {};
         req.query = { s: 'a002' };
         req.session = {};
         req.session['passport'] = {
@@ -293,7 +288,7 @@ describe('Strategy', function() {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
                 method: 'password',
-                timestamp: new Date(now - 3600000)
+                timestamp: new Date(Date.now() - 3600000)
               } ]
             }
           }
@@ -307,7 +302,7 @@ describe('Strategy', function() {
         expect(this.authInfo).to.deep.equal({
           methods: [ {
             method: 'password',
-            timestamp: new Date(now - 3600000)
+            timestamp: new Date('2011-07-21T19:42:50.000Z')
           } ],
           sessionSelector: 'a002'
         });
@@ -318,7 +313,7 @@ describe('Strategy', function() {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
                   method: 'password',
-                  timestamp: new Date(now - 3600000)
+                  timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
             }
