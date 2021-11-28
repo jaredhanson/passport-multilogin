@@ -57,7 +57,7 @@ describe('Strategy', function() {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
                 method: 'password',
-                timestamp: new Date()
+                timestamp: new Date(Date.now() - 7200000)
               } ]
             }
           }
@@ -71,7 +71,7 @@ describe('Strategy', function() {
         expect(this.authInfo).to.deep.equal({
           methods: [ {
             method: 'password',
-            timestamp: new Date('2011-07-21T20:42:50.000Z')
+            timestamp: new Date('2011-07-21T18:42:50.000Z')
           } ],
           sessionSelector: 'a001'
         });
@@ -83,7 +83,7 @@ describe('Strategy', function() {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
                   method: 'password',
-                  timestamp: new Date('2011-07-21T20:42:50.000Z')
+                  timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               }
             }
