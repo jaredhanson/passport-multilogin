@@ -226,7 +226,7 @@ describe('SessionManager', function() {
   
   describe('#logOut', function() {
     
-    it('should terminate single session', function(done) {
+    it('should terminate login session', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
       });
@@ -234,7 +234,7 @@ describe('SessionManager', function() {
       var req = new Object();
       req.session = {};
       req.session['passport'] = {
-         default: 'a001',
+        default: 'a001',
         sessions: {
           'a001': {
             user: { id: '248289761001', displayName: 'Jane Doe' },
@@ -253,9 +253,9 @@ describe('SessionManager', function() {
         });
         done();
       })
-    }); // should terminate single session
+    }); // should terminate login session
     
-    it('should terminate two sessions', function(done) {
+    it('should terminate two login sessions', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
       });
@@ -288,8 +288,53 @@ describe('SessionManager', function() {
         });
         done();
       })
-    }); // should terminate two sessions
+    }); // should terminate two login sessions
     
-  });
+    it('should terminate selected non-default login session', function(done) {
+      var manager = new SessionManager(function(user, req, cb) {
+        cb(null, user);
+      });
+    
+      var req = new Object();
+      req.session = {};
+      req.session['passport'] = {
+        default: 'a001',
+        sessions: {
+          'a001': {
+            user: { id: '248289761001', displayName: 'Jane Doe' },
+            methods: [ {
+              method: 'password'
+            } ]
+          },
+          'a002': {
+            user: { id: '248289761002', displayName: 'John Doe' },
+            methods: [ {
+              method: 'password'
+            } ]
+          }
+        }
+      };
+    
+      manager.logOut(req, { sessionSelector: 'a002' }, function(err) {
+        if (err) { return done(err); }
+        
+        expect(req.session).to.deep.equal({
+          passport: {
+            default: 'a001',
+            sessions: {
+              'a001': {
+                user: { id: '248289761001', displayName: 'Jane Doe' },
+                methods: [ {
+                  method: 'password'
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+    }); // should terminate selected non-default login session
+    
+  }); // #logOut
   
 });
