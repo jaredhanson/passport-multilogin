@@ -324,6 +324,23 @@ describe('Strategy', function() {
       .authenticate();
   }); // should pass request without default login session and selector query parameter
   
+  it('should pass request without login session using multi option', function(done) {
+    var strategy = new Strategy();
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req._passport = {};
+        req.session = {};
+        req.session['passport'] = {};
+      })
+      .pass(function() {
+        expect(this.user).to.be.undefined;
+        expect(this.authInfo).to.be.undefined;
+        done();
+      })
+      .authenticate({ multi: true });
+  }); // should pass request without login session using multi option
+  
   it('should pass request with one login session using multi option', function(done) {
     var strategy = new Strategy(function(user, req, cb) {
       cb(null, user);
