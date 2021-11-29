@@ -59,6 +59,45 @@ describe('SessionManager', function() {
       })
     }); // should establish initial session
     
+    it('should establish initial session with empty key', function(done) {
+      var genh = sinon.stub().returns('a001');
+      var manager = new SessionManager({ genh: genh }, function(user, req, cb) {
+        cb(null, user);
+      });
+    
+      var req = new Object();
+      req.session = {};
+      req.session['passport'] = {};
+      
+      var user = {
+        id: '248289761001',
+        displayName: 'Jane Doe'
+      };
+      var info = {
+        method: 'password'
+      };
+    
+      manager.logIn(req, user, info, function(err) {
+        if (err) { return done(err); }
+        
+        expect(req.session).to.deep.equal({
+          passport: {
+            default: 'a001',
+            sessions: {
+              'a001': {
+                user: { id: '248289761001', displayName: 'Jane Doe' },
+                methods: [ {
+                  method: 'password',
+                  timestamp: new Date('2011-07-21T20:42:50.000Z')
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+    }); // should establish initial session with empty key
+    
     it('should update initial session on reauthentication with password', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
