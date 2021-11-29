@@ -10,6 +10,16 @@ var SessionManager = require('../lib/sessionmanager');
 describe('SessionManager', function() {
   
   describe('#logIn', function() {
+    var clock;
+  
+    beforeEach(function() {
+      clock = sinon.useFakeTimers(1311280970000);
+    });
+  
+    afterEach(function() {
+      clock.restore();
+    });
+    
     
     it('should establish initial session', function(done) {
       var genh = sinon.stub().returns('a001');
@@ -31,9 +41,6 @@ describe('SessionManager', function() {
       manager.logIn(req, user, info, function(err) {
         if (err) { return done(err); }
         
-        var timestamp = req.session['passport'].sessions['a001'].methods[0].timestamp;
-        delete req.session['passport'].sessions['a001'].methods[0].timestamp;
-        
         expect(req.session).to.deep.equal({
           passport: {
             default: 'a001',
@@ -41,23 +48,22 @@ describe('SessionManager', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password'
+                  method: 'password',
+                  timestamp: new Date('2011-07-21T20:42:50.000Z')
                 } ]
               }
             }
           }
         });
-        expect(timestamp).to.be.closeToTime(new Date(), 1);
         done();
       })
     }); // should establish initial session
     
-    it('should update existing session on reauthentication with password', function(done) {
+    it('should update initial session on reauthentication with password', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
       });
-    
-      var now = Date.now();
+      
       var req = new Object();
       req.session = {};
       req.session['passport'] = {
@@ -67,7 +73,7 @@ describe('SessionManager', function() {
             user: { id: '248289761001', displayName: 'Jane Doe' },
             methods: [ {
               method: 'password',
-              timestamp: new Date(now - 43200000)
+              timestamp: new Date(Date.now() - 43200000)
             } ]
           }
         }
@@ -84,9 +90,6 @@ describe('SessionManager', function() {
       manager.logIn(req, user, info, function(err) {
         if (err) { return done(err); }
         
-        var timestamp = req.session['passport'].sessions['a001'].methods[0].timestamp;
-        delete req.session['passport'].sessions['a001'].methods[0].timestamp;
-        
         expect(req.session).to.deep.equal({
           passport: {
             default: 'a001',
@@ -94,23 +97,22 @@ describe('SessionManager', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password'
+                  method: 'password',
+                  timestamp: new Date('2011-07-21T20:42:50.000Z')
                 } ]
               }
             }
           }
         });
-        expect(timestamp).to.be.closeToTime(new Date(), 1);
         done();
       })
-    }); // should update existing session on reauthentication with password
+    }); // should update initial session on reauthentication with password
     
-    it('should update existing session on authentication with one-time password', function(done) {
+    it('should update initial session on authentication with one-time password', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
       });
-    
-      var now = Date.now();
+      
       var req = new Object();
       req.session = {};
       req.session['passport'] = {
@@ -120,7 +122,7 @@ describe('SessionManager', function() {
             user: { id: '248289761001', displayName: 'Jane Doe' },
             methods: [ {
               method: 'password',
-              timestamp: new Date(now - 5000)
+              timestamp: new Date(Date.now() - 5000)
             } ]
           }
         }
@@ -137,9 +139,6 @@ describe('SessionManager', function() {
       manager.logIn(req, user, info, function(err) {
         if (err) { return done(err); }
         
-        var timestamp = req.session['passport'].sessions['a001'].methods[1].timestamp;
-        delete req.session['passport'].sessions['a001'].methods[1].timestamp;
-        
         expect(req.session).to.deep.equal({
           passport: {
             default: 'a001',
@@ -148,26 +147,25 @@ describe('SessionManager', function() {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
                   method: 'password',
-                  timestamp: new Date(now - 5000)
+                  timestamp: new Date('2011-07-21T20:42:45.000Z')
                 }, {
-                  method: 'otp'
+                  method: 'otp',
+                  timestamp: new Date('2011-07-21T20:42:50.000Z')
                 } ]
               }
             }
           }
         });
-        expect(timestamp).to.be.closeToTime(new Date(), 1);
         done();
       })
-    }); // should update existing session on authentication with one-time password
+    }); // should update initial session on authentication with one-time password
     
-    it('should establish second session', function(done) {
+    it('should establish secondary session', function(done) {
       var genh = sinon.stub().returns('a002');
       var manager = new SessionManager({ genh: genh }, function(user, req, cb) {
         cb(null, user);
       });
     
-      var now = Date.now();
       var req = new Object();
       req.session = {};
       req.session['passport'] = {
@@ -177,7 +175,7 @@ describe('SessionManager', function() {
             user: { id: '248289761001', displayName: 'Jane Doe' },
             methods: [ {
               method: 'password',
-              timestamp: new Date(now - 7200000)
+              timestamp: new Date(Date.now() - 7200000)
             } ]
           }
         }
@@ -194,9 +192,6 @@ describe('SessionManager', function() {
       manager.logIn(req, user, info, function(err) {
         if (err) { return done(err); }
         
-        var timestamp = req.session['passport'].sessions['a002'].methods[0].timestamp;
-        delete req.session['passport'].sessions['a002'].methods[0].timestamp;
-        
         expect(req.session).to.deep.equal({
           passport: {
             default: 'a001',
@@ -205,22 +200,22 @@ describe('SessionManager', function() {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
                   method: 'password',
-                  timestamp: new Date(now - 7200000)
+                  timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               },
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
-                  method: 'password'
+                  method: 'password',
+                  timestamp: new Date('2011-07-21T20:42:50.000Z')
                 } ]
               }
             }
           }
         });
-        expect(timestamp).to.be.closeToTime(new Date(), 1);
         done();
       })
-    }); // should establish second session
+    }); // should establish secondary session
     
   }); // #logIn
   
