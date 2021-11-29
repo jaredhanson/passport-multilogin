@@ -290,6 +290,50 @@ describe('SessionManager', function() {
       })
     }); // should terminate two login sessions
     
+    it('should terminate selected default login session', function(done) {
+      var manager = new SessionManager(function(user, req, cb) {
+        cb(null, user);
+      });
+    
+      var req = new Object();
+      req.session = {};
+      req.session['passport'] = {
+        default: 'a001',
+        sessions: {
+          'a001': {
+            user: { id: '248289761001', displayName: 'Jane Doe' },
+            methods: [ {
+              method: 'password'
+            } ]
+          },
+          'a002': {
+            user: { id: '248289761002', displayName: 'John Doe' },
+            methods: [ {
+              method: 'password'
+            } ]
+          }
+        }
+      };
+    
+      manager.logOut(req, { sessionSelector: 'a001' }, function(err) {
+        if (err) { return done(err); }
+        
+        expect(req.session).to.deep.equal({
+          passport: {
+            sessions: {
+              'a002': {
+                user: { id: '248289761002', displayName: 'John Doe' },
+                methods: [ {
+                  method: 'password'
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+    }); // should terminate selected default login session
+    
     it('should terminate selected non-default login session', function(done) {
       var manager = new SessionManager(function(user, req, cb) {
         cb(null, user);
