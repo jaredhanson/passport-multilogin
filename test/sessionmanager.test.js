@@ -23,7 +23,7 @@ describe('SessionManager', function() {
     
     it('should establish initial session', function(done) {
       var genh = sinon.stub().returns('a001');
-      var manager = new SessionManager({ genh: genh }, function(user, req, cb) {
+      var manager = new SessionManager({ genh: genh }, function(req, user, cb) {
         cb(null, user);
       });
     
@@ -61,7 +61,7 @@ describe('SessionManager', function() {
     
     it('should establish initial session with empty key', function(done) {
       var genh = sinon.stub().returns('a001');
-      var manager = new SessionManager({ genh: genh }, function(user, req, cb) {
+      var manager = new SessionManager({ genh: genh }, function(req, user, cb) {
         cb(null, user);
       });
     
@@ -99,7 +99,7 @@ describe('SessionManager', function() {
     }); // should establish initial session with empty key
     
     it('should update initial session on reauthentication with password', function(done) {
-      var manager = new SessionManager(function(user, req, cb) {
+      var manager = new SessionManager(function(req, user, cb) {
         cb(null, user);
       });
       
@@ -148,7 +148,7 @@ describe('SessionManager', function() {
     }); // should update initial session on reauthentication with password
     
     it('should update initial session on authentication with one-time password', function(done) {
-      var manager = new SessionManager(function(user, req, cb) {
+      var manager = new SessionManager(function(req, user, cb) {
         cb(null, user);
       });
       
@@ -201,7 +201,7 @@ describe('SessionManager', function() {
     
     it('should establish secondary session', function(done) {
       var genh = sinon.stub().returns('a002');
-      var manager = new SessionManager({ genh: genh }, function(user, req, cb) {
+      var manager = new SessionManager({ genh: genh }, function(req, user, cb) {
         cb(null, user);
       });
     
