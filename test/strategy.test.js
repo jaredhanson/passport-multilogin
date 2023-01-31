@@ -42,7 +42,7 @@ describe('Strategy', function() {
   });
   
   it('should pass request with login session', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
@@ -95,7 +95,7 @@ describe('Strategy', function() {
   }); // should pass request with login session
   
   it('should pass request with two login sessions', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
@@ -162,7 +162,7 @@ describe('Strategy', function() {
   }); // should pass request with two login sessions
   
   it('should pass request with two login sessions and selector query parameter', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
@@ -230,7 +230,7 @@ describe('Strategy', function() {
   }); // should pass request with two login sessions and selector query parameter
   
   it('should pass request without default login session', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
@@ -273,7 +273,7 @@ describe('Strategy', function() {
   }); // should pass request without default login session
   
   it('should pass request without default login session and selector query parameter', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
@@ -342,7 +342,7 @@ describe('Strategy', function() {
   }); // should pass request without login session using multi option
   
   it('should pass request with one login session using multi option', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
@@ -395,7 +395,7 @@ describe('Strategy', function() {
   }); // should pass request with one login session using multi option
   
   it('should pass request with two login sessions using multi option', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
@@ -471,7 +471,7 @@ describe('Strategy', function() {
   }); // should pass request with two login sessions using multi option
   
   it('should pass request with two login sessions and selector query parameter using multi option', function(done) {
-    var strategy = new Strategy(function(user, req, cb) {
+    var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
