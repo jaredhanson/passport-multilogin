@@ -169,7 +169,7 @@ describe('Strategy', function() {
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
-        req.query = { s: 'a002' };
+        req.query = { select_session: 'a002' };
         req.session = {};
         req.session['passport'] = {
           default: 'a001',
@@ -280,7 +280,7 @@ describe('Strategy', function() {
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
-        req.query = { s: 'a002' };
+        req.query = { select_session: 'a002' };
         req.session = {};
         req.session['passport'] = {
           sessions: {
@@ -478,7 +478,7 @@ describe('Strategy', function() {
     chai.passport.use(strategy)
       .request(function(req) {
         req._passport = {};
-        req.query = { s: 'a002' };
+        req.query = { select_session: 'a002' };
         req.session = {};
         req.session['passport'] = {
           default: 'a001',
