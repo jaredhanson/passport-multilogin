@@ -24,6 +24,21 @@ describe('Strategy', function() {
     expect(strategy.name).to.equal('session');
   });
   
+  it('should pass request with newly initialized session and not set user', function(done) {
+    var strategy = new Strategy();
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req.session = {};
+      })
+      .pass(function() {
+        expect(this.user).to.be.undefined;
+        expect(this.authInfo).to.be.undefined;
+        done();
+      })
+      .authenticate();
+  }); // should pass request with newly initialized session and not set user
+  
   it('should pass request without login session and not set user', function(done) {
     var strategy = new Strategy();
     
@@ -54,7 +69,7 @@ describe('Strategy', function() {
             'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 7200000)
               } ]
             }
@@ -68,7 +83,7 @@ describe('Strategy', function() {
         });
         expect(this.authInfo).to.deep.equal({
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T18:42:50.000Z')
           } ],
           sessionSelector: 'a001'
@@ -80,7 +95,7 @@ describe('Strategy', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               }
@@ -106,14 +121,14 @@ describe('Strategy', function() {
             'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 7200000)
               } ]
             },
             'a002': {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 3600000)
               } ]
             }
@@ -127,7 +142,7 @@ describe('Strategy', function() {
         });
         expect(this.authInfo).to.deep.equal({
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T18:42:50.000Z')
           } ],
           sessionSelector: 'a001'
@@ -139,14 +154,14 @@ describe('Strategy', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               },
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
@@ -173,14 +188,14 @@ describe('Strategy', function() {
             'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 7200000)
               } ]
             },
             'a002': {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 3600000)
               } ]
             }
@@ -194,7 +209,7 @@ describe('Strategy', function() {
         });
         expect(this.authInfo).to.deep.equal({
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T19:42:50.000Z')
           } ],
           sessionSelector: 'a002'
@@ -206,14 +221,14 @@ describe('Strategy', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               },
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
@@ -238,7 +253,7 @@ describe('Strategy', function() {
             'a002': {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 3600000)
               } ]
             }
@@ -254,7 +269,7 @@ describe('Strategy', function() {
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
@@ -280,7 +295,7 @@ describe('Strategy', function() {
             'a002': {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 3600000)
               } ]
             }
@@ -294,7 +309,7 @@ describe('Strategy', function() {
         });
         expect(this.authInfo).to.deep.equal({
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T19:42:50.000Z')
           } ],
           sessionSelector: 'a002'
@@ -305,7 +320,7 @@ describe('Strategy', function() {
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
@@ -347,7 +362,7 @@ describe('Strategy', function() {
             'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 7200000)
               } ]
             }
@@ -361,7 +376,7 @@ describe('Strategy', function() {
         });
         expect(this.authInfo).to.deep.equal({
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T18:42:50.000Z')
           } ],
           sessionSelector: 'a001'
@@ -373,7 +388,7 @@ describe('Strategy', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               }
@@ -399,14 +414,14 @@ describe('Strategy', function() {
             'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 7200000)
               } ]
             },
             'a002': {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 3600000)
               } ]
             }
@@ -423,13 +438,13 @@ describe('Strategy', function() {
         } ]);
         expect(this.authInfo).to.deep.equal([ {
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T18:42:50.000Z')
           } ],
           sessionSelector: 'a001'
         }, {
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T19:42:50.000Z')
           } ],
           sessionSelector: 'a002'
@@ -441,14 +456,14 @@ describe('Strategy', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               },
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
@@ -475,14 +490,14 @@ describe('Strategy', function() {
             'a001': {
               user: { id: '248289761001', displayName: 'Jane Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 7200000)
               } ]
             },
             'a002': {
               user: { id: '248289761002', displayName: 'John Doe' },
               methods: [ {
-                method: 'password',
+                type: 'password',
                 timestamp: new Date(Date.now() - 3600000)
               } ]
             }
@@ -496,7 +511,7 @@ describe('Strategy', function() {
         });
         expect(this.authInfo).to.deep.equal({
           methods: [ {
-            method: 'password',
+            type: 'password',
             timestamp: new Date('2011-07-21T19:42:50.000Z')
           } ],
           sessionSelector: 'a002'
@@ -508,14 +523,14 @@ describe('Strategy', function() {
               'a001': {
                 user: { id: '248289761001', displayName: 'Jane Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T18:42:50.000Z')
                 } ]
               },
               'a002': {
                 user: { id: '248289761002', displayName: 'John Doe' },
                 methods: [ {
-                  method: 'password',
+                  type: 'password',
                   timestamp: new Date('2011-07-21T19:42:50.000Z')
                 } ]
               }
