@@ -527,4 +527,18 @@ describe('Strategy', function() {
       .authenticate({ multi: true });
   }); // should pass request with two login sessions using multi option and set user to selector in query parameter
   
+  it('should error when session is not available', function(done) {
+    var strategy = new Strategy();
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+      })
+      .error(function(err) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(err.message).to.equal("Login sessions require session support. Did you forget to use `express-session` middleware?");
+        done();
+      })
+      .authenticate();
+  }); // should error when session is not available
+  
 });
