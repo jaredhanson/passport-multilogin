@@ -317,12 +317,11 @@ describe('Strategy', function() {
       .authenticate();
   }); // should pass request without default login session and set user to selector in query parameter
   
-  it('should pass request without login session using multi option', function(done) {
+  it('should pass request without login session using multi option and not set user', function(done) {
     var strategy = new Strategy();
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.session = {};
         req.session['passport'] = {};
       })
@@ -332,16 +331,15 @@ describe('Strategy', function() {
         done();
       })
       .authenticate({ multi: true });
-  }); // should pass request without login session using multi option
+  }); // should pass request without login session using multi option and not set user
   
-  it('should pass request with one login session using multi option', function(done) {
+  it('should pass request with one login session using multi option and set user to default session', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.session = {};
         req.session['passport'] = {
           default: 'a001',
@@ -385,16 +383,15 @@ describe('Strategy', function() {
         done();
       })
       .authenticate({ multi: true });
-  }); // should pass request with one login session using multi option
+  }); // should pass request with one login session using multi option and set user to default session
   
-  it('should pass request with two login sessions using multi option', function(done) {
+  it('should pass request with two login sessions using multi option and set user to array', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.session = {};
         req.session['passport'] = {
           default: 'a001',
@@ -461,16 +458,15 @@ describe('Strategy', function() {
         done();
       })
       .authenticate({ multi: true });
-  }); // should pass request with two login sessions using multi option
+  }); // should pass request with two login sessions using multi option and set user to array
   
-  it('should pass request with two login sessions and selector query parameter using multi option', function(done) {
+  it('should pass request with two login sessions using multi option and set user to selector in query parameter', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.query = { select_session: 'a002' };
         req.session = {};
         req.session['passport'] = {
@@ -529,6 +525,6 @@ describe('Strategy', function() {
         done();
       })
       .authenticate({ multi: true });
-  }); // should pass request with two login sessions and selector query parameter using multi option
+  }); // should pass request with two login sessions using multi option and set user to selector in query parameter
   
 });
