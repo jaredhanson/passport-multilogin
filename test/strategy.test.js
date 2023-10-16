@@ -24,12 +24,11 @@ describe('Strategy', function() {
     expect(strategy.name).to.equal('session');
   });
   
-  it('should pass request without login session', function(done) {
+  it('should pass request without login session and not set user', function(done) {
     var strategy = new Strategy();
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.session = {};
         req.session['passport'] = {};
       })
@@ -39,16 +38,15 @@ describe('Strategy', function() {
         done();
       })
       .authenticate();
-  });
+  }); // should pass request without login session and not set user
   
-  it('should pass request with login session', function(done) {
+  it('should pass request with login session and set user to default session', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.session = {};
         req.session['passport'] = {
           default: 'a001',
@@ -92,16 +90,15 @@ describe('Strategy', function() {
         done();
       })
       .authenticate();
-  }); // should pass request with login session
+  }); // should pass request with login session and set user to default session
   
-  it('should pass request with two login sessions', function(done) {
+  it('should pass request with two login sessions and set user to default session', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.session = {};
         req.session['passport'] = {
           default: 'a001',
@@ -159,16 +156,15 @@ describe('Strategy', function() {
         done();
       })
       .authenticate();
-  }); // should pass request with two login sessions
+  }); // should pass request with two login sessions and set user to default session
   
-  it('should pass request with two login sessions and selector query parameter', function(done) {
+  it('should pass request with two login sessions and set user to selector in query parameter', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.query = { select_session: 'a002' };
         req.session = {};
         req.session['passport'] = {
@@ -227,17 +223,15 @@ describe('Strategy', function() {
         done();
       })
       .authenticate();
-  }); // should pass request with two login sessions and selector query parameter
+  }); // should pass request with two login sessions and set user to selector in query parameter
   
-  it('should pass request without default login session', function(done) {
+  it('should pass request without default login session and not set user', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
-        req._passport.instance = {};
         req.session = {};
         req.session['passport'] = {
           sessions: {
@@ -270,7 +264,7 @@ describe('Strategy', function() {
         done();
       })
       .authenticate();
-  }); // should pass request without default login session
+  }); // should pass request without default login session and not set user
   
   it('should pass request without default login session and selector query parameter', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
