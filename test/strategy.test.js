@@ -266,14 +266,13 @@ describe('Strategy', function() {
       .authenticate();
   }); // should pass request without default login session and not set user
   
-  it('should pass request without default login session and selector query parameter', function(done) {
+  it('should pass request without default login session and set user to selector in query parameter', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
       cb(null, user);
     });
     
     chai.passport.use(strategy)
       .request(function(req) {
-        req._passport = {};
         req.query = { select_session: 'a002' };
         req.session = {};
         req.session['passport'] = {
@@ -316,7 +315,7 @@ describe('Strategy', function() {
         done();
       })
       .authenticate();
-  }); // should pass request without default login session and selector query parameter
+  }); // should pass request without default login session and set user to selector in query parameter
   
   it('should pass request without login session using multi option', function(done) {
     var strategy = new Strategy();
