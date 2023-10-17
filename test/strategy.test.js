@@ -598,6 +598,91 @@ describe('Strategy', function() {
       .authenticate({ multi: true });
   }); // should pass request with two login sessions using multi option and set user to selector in query parameter
   
+  it('should remove primary session when login session has been invalidated', function(done) {
+    var strategy = new Strategy(function(req, user, cb) {
+      cb(null, false);
+    });
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req.session = {};
+        req.session['passport'] = {
+          default: 'a001',
+          sessions: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                type: 'password',
+                timestamp: new Date(Date.now() - 7200000)
+              } ]
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.be.undefined;
+        expect(this.authInfo).to.be.undefined;
+        expect(this.session).to.deep.equal({
+          passport: {
+            sessions: {}
+          }
+        });
+        done();
+      })
+      .authenticate();
+  }); // should remove primary session when login session has been invalidated
+  
+  it('should remove secondary session when login session has been invalidated', function(done) {
+    var strategy = new Strategy(function(req, user, cb) {
+      cb(null, false);
+    });
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req.query = { select_session: 'a002' };
+        req.session = {};
+        req.session['passport'] = {
+          default: 'a001',
+          sessions: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                type: 'password',
+                timestamp: new Date(Date.now() - 7200000)
+              } ]
+            },
+            'a002': {
+              user: { id: '248289761002', displayName: 'John Doe' },
+              methods: [ {
+                type: 'password',
+                timestamp: new Date(Date.now() - 3600000)
+              } ]
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.be.undefined;
+        expect(this.authInfo).to.be.undefined;
+        expect(this.session).to.deep.equal({
+          passport: {
+            default: 'a001',
+            sessions: {
+              'a001': {
+                user: { id: '248289761001', displayName: 'Jane Doe' },
+                methods: [ {
+                  type: 'password',
+                  timestamp: new Date('2011-07-21T18:42:50.000Z')
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+      .authenticate();
+  }); // should remove secondary session when login session has been invalidated
+  
   it('should error when session is not available', function(done) {
     var strategy = new Strategy();
     
