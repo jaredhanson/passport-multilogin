@@ -55,8 +55,64 @@ describe('Strategy', function() {
       .authenticate();
   }); // should pass request without login session and not set user
   
+  it('should pass request with login session and set user to default session using verify function that accepts user and callback', function(done) {
+    var strategy = new Strategy(function(user, cb) {
+      expect(user).to.deep.equal({ id: '248289761001', displayName: 'Jane Doe' });
+      cb(null, user);
+    });
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req.session = {};
+        req.session['passport'] = {
+          default: 'a001',
+          sessions: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                type: 'password',
+                timestamp: new Date(Date.now() - 7200000)
+              } ]
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '248289761001',
+          displayName: 'Jane Doe'
+        });
+        expect(this.authInfo).to.deep.equal({
+          methods: [ {
+            type: 'password',
+            timestamp: new Date('2011-07-21T18:42:50.000Z')
+          } ],
+          sessionSelector: 'a001'
+        });
+        expect(this.session).to.deep.equal({
+          passport: {
+            default: 'a001',
+            sessions: {
+              'a001': {
+                user: { id: '248289761001', displayName: 'Jane Doe' },
+                methods: [ {
+                  type: 'password',
+                  timestamp: new Date('2011-07-21T18:42:50.000Z')
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+      .authenticate();
+  }); // should pass request with login session and set user to default session using verify function that accepts user and callback
+  
   it('should pass request with login session and set user to default session', function(done) {
     var strategy = new Strategy(function(req, user, cb) {
+      expect(req.method).to.equal('GET');
+      expect(req.url).to.equal('/');
+      expect(user).to.deep.equal({ id: '248289761001', displayName: 'Jane Doe' });
       cb(null, user);
     });
     
