@@ -739,6 +739,65 @@ describe('Strategy', function() {
       .authenticate();
   }); // should remove secondary session when login session has been invalidated
   
+  it('should remove primary session when login session has been invalidated using multi option', function(done) {
+    var verify = sinon.stub();
+    verify.onCall(0).yields(null, false);
+    verify.onCall(1).yields(null, { id: '248289761002', displayName: 'John Doe' });
+    var strategy = new Strategy(verify);
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req.session = {};
+        req.session['passport'] = {
+          default: 'a001',
+          sessions: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                type: 'password',
+                timestamp: new Date(Date.now() - 7200000)
+              } ]
+            },
+            'a002': {
+              user: { id: '248289761002', displayName: 'John Doe' },
+              methods: [ {
+                type: 'password',
+                timestamp: new Date(Date.now() - 3600000)
+              } ]
+            }
+          }
+        };
+      })
+      .pass(function() {
+        expect(this.user).to.deep.equal({
+          id: '248289761002',
+          displayName: 'John Doe'
+        });
+        expect(this.authInfo).to.deep.equal({
+          methods: [ {
+            type: 'password',
+            timestamp: new Date('2011-07-21T19:42:50.000Z')
+          } ],
+          sessionSelector: 'a002'
+        });
+        expect(this.session).to.deep.equal({
+          passport: {
+            sessions: {
+              'a002': {
+                user: { id: '248289761002', displayName: 'John Doe' },
+                methods: [ {
+                  type: 'password',
+                  timestamp: new Date(Date.now() - 3600000)
+                } ]
+              }
+            }
+          }
+        });
+        done();
+      })
+      .authenticate({ multi: true });
+  }); // should remove primary session when login session has been invalidated
+  
   it('should remove secondary session when login session has been invalidated using multi option', function(done) {
     var verify = sinon.stub();
     verify.onCall(0).yields(null, { id: '248289761001', displayName: 'Jane Doe' });
