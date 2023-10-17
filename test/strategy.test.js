@@ -612,4 +612,33 @@ describe('Strategy', function() {
       .authenticate();
   }); // should error when session is not available
   
+  it('should error when verify function encounters an error', function(done) {
+    var strategy = new Strategy(function(req, user, cb) {
+      cb(new Error('something went wrong'));
+    });
+    
+    chai.passport.use(strategy)
+      .request(function(req) {
+        req.session = {};
+        req.session['passport'] = {
+          default: 'a001',
+          sessions: {
+            'a001': {
+              user: { id: '248289761001', displayName: 'Jane Doe' },
+              methods: [ {
+                type: 'password',
+                timestamp: new Date(Date.now() - 7200000)
+              } ]
+            }
+          }
+        };
+      })
+      .error(function(err) {
+        expect(err).to.be.an.instanceOf(Error);
+        expect(err.message).to.equal("something went wrong");
+        done();
+      })
+      .authenticate();
+  }); // should error when verify function encounters an error
+  
 });
